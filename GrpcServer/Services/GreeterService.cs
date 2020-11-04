@@ -22,5 +22,16 @@ namespace GrpcServer
                 Message = "Hello " + request.Name
             });
         }
+
+        public override async Task KeepSayingHello(HelloRequest request, IServerStreamWriter<HelloReply> responseStream, ServerCallContext context)
+        {
+            decimal i = 0;
+            while (true)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                await responseStream.WriteAsync(new HelloReply {Message = $"#{++i} : {request.Name}"});
+            }
+        }
+        
     }
 }
