@@ -13,7 +13,7 @@ namespace GrpcClientConsole
       AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
       // The port number(5001) must match the port of the gRPC server.
-      using var channel = GrpcChannel.ForAddress("http://127.0.0.1:50051");
+      using var channel = GrpcChannel.ForAddress("http://host.docker.internal:50051");
       var client =  new GreetService.GreetServiceClient(channel);
       var greeting = new Greeting{FirstName = "Nishant", LastName = "Singh"};
       var request = new GreetManyTimesRequest{ Greeting = greeting };
