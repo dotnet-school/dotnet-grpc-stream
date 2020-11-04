@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcServer";
+
+// Think of it like namespaces in proto files
+// Useful when our proto file is consumed by another proto file
+package prices;
+
+// The greeting service definition.
+service Pricing {
+  rpc Subscribe (PriceRequest) returns (stream PriceResponse);
+}
+
+// The request message
+message PriceRequest {
+  string uic = 1;
+  string assetType = 2;
+}
+
+// The response message
+message PriceResponse {
+  string quote = 1;
+}

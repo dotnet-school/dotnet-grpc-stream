@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Grpc.Net.Client;
+using GrpcServer;
 
 namespace GrpcClientConsole
 {
@@ -11,27 +12,27 @@ namespace GrpcClientConsole
     static async Task Main(string[] args)
     {
       AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+      await SubscribeToPrices();
+    }
 
-      // The port number(5001) must match the port of the gRPC server.
-      using var channel = GrpcChannel.ForAddress("http://127.0.0.1:50051");
-      var client =  new GreetService.GreetServiceClient(channel);
-      var greeting = new Greeting{FirstName = "Nishant", LastName = "Singh"};
-      var request = new GreetManyTimesRequest{ Greeting = greeting };
-      AsyncServerStreamingCall<GreetManyTimesResponse> result = client.GreetManyTimes(request);
-      IAsyncStreamReader<GreetManyTimesResponse> streamReader = result.ResponseStream;
-
-      bool hasMore = true;
-      while (hasMore)
+    private static async Task SubscribeToPrices(string uic = "211", string assetType="Stock")
+    {
+      var request = new PriceRequest{Uic = uic, AssetType = assetType};
+      
+      Console.WriteLine("Connecting with grpc server");
+      
+      using var channel = GrpcChannel.ForAddress("http://127.0.0.1:5000");
+      var client = new Pricing.PricingClient(channel);
+      
+      Console.WriteLine("Requesting subcription");
+      
+      var streamReader = client.Subscribe(request).ResponseStream;
+      while (await streamReader.MoveNext())
       {
-        hasMore = await streamReader.MoveNext();
-        GreetManyTimesResponse response = streamReader.Current;
-        Console.WriteLine($"Response found : ${response.Result.ToString()}");
+        Console.WriteLine(streamReader.Current);
       }
-
-      // var reply = await result;
-      // Console.WriteLine("Greeting: " + reply.Message);
-      // Console.WriteLine("Press any key to exit...");
-      // Console.ReadKey();
+      
+      Console.WriteLine("Gracefully ended.");
     }
   }
 }
