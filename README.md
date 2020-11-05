@@ -1,7 +1,3 @@
-https://github.com/dotnetgik/gRPCDocker/tree/master/Properties
-
-
-
 Build docker images
 
 ```
