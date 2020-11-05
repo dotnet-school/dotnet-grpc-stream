@@ -21,7 +21,9 @@ namespace GrpcClientConsole
       
       Console.WriteLine("Connecting with grpc server");
       
-      using var channel = GrpcChannel.ForAddress("http://127.0.0.1:5000");
+      // using var channel = GrpcChannel.ForAddress("http://127.0.0.1:5000");
+      using var channel = GrpcChannel.ForAddress("http://host.docker.internal:5000");
+
       var client = new Pricing.PricingClient(channel);
       
       Console.WriteLine("Requesting subcription");

@@ -18,3 +18,9 @@ Run server
 docker run -p 5000:80 grpc-server
 ```
 
+Run clien
+
+```
+docker run grpc-client 
+```
+
